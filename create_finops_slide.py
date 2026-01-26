@@ -10,13 +10,10 @@ Each click reveals the next section in the cycle.
 
 from pptx import Presentation
 from pptx.util import Inches, Pt
-from pptx.dml.color import RgbColor
+from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.oxml.ns import nsmap
-from pptx.oxml import parse_xml
+from pptx.enum.text import PP_ALIGN
 from lxml import etree
-import copy
 
 
 def create_finops_slide():
@@ -31,8 +28,8 @@ def create_finops_slide():
     slide = prs.slides.add_slide(blank_layout)
 
     # Colors
-    blue_color = RgbColor(0, 120, 212)  # Primary blue
-    dark_color = RgbColor(0, 0, 0)      # Black for title
+    blue_color = RGBColor(0, 120, 212)  # Primary blue
+    dark_color = RGBColor(0, 0, 0)      # Black for title
 
     # === LEFT SIDE CONTENT ===
 
@@ -133,7 +130,7 @@ def create_finops_slide():
             Inches(1.0)
         )
         cloud.fill.solid()
-        cloud.fill.fore_color.rgb = RgbColor(255, 255, 255)
+        cloud.fill.fore_color.rgb = RGBColor(255, 255, 255)
         cloud.line.color.rgb = blue_color
         cloud.line.width = Pt(2)
 
@@ -198,7 +195,7 @@ def create_finops_slide():
     page_para = page_frame.paragraphs[0]
     page_para.text = "11"
     page_para.font.size = Pt(12)
-    page_para.font.color.rgb = RgbColor(128, 128, 128)
+    page_para.font.color.rgb = RGBColor(128, 128, 128)
     page_para.alignment = PP_ALIGN.RIGHT
 
     # Add animations
