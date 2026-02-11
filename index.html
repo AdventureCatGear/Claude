@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure Token Transfer</title>
+<style>
+  :root {
+    --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a;
+    --accent: #6c5ce7; --accent-light: #a29bfe;
+    --green: #00b894; --red: #e17055; --orange: #fdcb6e;
+    --text: #dfe6e9; --dim: #636e72; --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; padding: 24px 16px;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+  .header { text-align: center; padding: 24px 0 12px; }
+  .header h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
+  .header h1 span { margin-right: 8px; }
+  .header p { color: var(--dim); font-size: 0.85rem; margin-top: 4px; }
+
+  /* Tabs */
+  .tabs { display:flex; gap:0; margin: 20px 0; border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+  .tab { flex:1; padding:12px; text-align:center; font-size:0.85rem; font-weight:600;
+    background:transparent; color:var(--dim); border:none; cursor:pointer; transition:all .2s; }
+  .tab:not(:last-child) { border-right:1px solid var(--border); }
+  .tab.active { background:var(--accent); color:#fff; }
+  .tab:hover:not(.active) { color:var(--text); background:rgba(108,92,231,0.1); }
+
+  /* Chain pills */
+  .chains { display:flex; justify-content:center; gap:8px; margin:16px 0 24px; flex-wrap:wrap; }
+  .cpill { padding:8px 20px; border-radius:20px; border:2px solid var(--border); background:transparent;
+    color:var(--dim); font-size:0.85rem; font-weight:600; cursor:pointer; transition:all .15s; }
+  .cpill:hover { border-color:var(--accent-light); color:var(--text); }
+  .cpill.on { border-color:var(--accent); background:var(--accent); color:#fff; }
+
+  /* Card */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; }
+  .card-t { font-size:0.72rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--dim); margin-bottom:16px; font-weight:600; }
+
+  /* Fields */
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:0.75rem; color:var(--dim); margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px; font-weight:500; }
+  .field input, .field select { width:100%; padding:11px 14px; background:var(--bg); border:1px solid var(--border);
+    border-radius:8px; color:var(--text); font-size:0.9rem; outline:none; transition:border-color .2s; font-family:inherit; }
+  .field input:focus { border-color:var(--accent); }
+  .field input.err { border-color:var(--red); }
+  .field input.ok { border-color:var(--green); }
+  .row { display:flex; gap:12px; }
+  .row .field { flex:1; }
+
+  /* Button */
+  .btn { width:100%; padding:14px; border:none; border-radius:8px; font-size:0.95rem; font-weight:700;
+    cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:1px; font-family:inherit; }
+  .btn-go { background:var(--accent); color:#fff; }
+  .btn-go:hover { background:var(--accent-light); }
+  .btn-go:active { transform:scale(0.98); }
+  .btn-clr { background:transparent; border:1px solid var(--border); color:var(--dim); margin-top:8px; font-size:0.8rem; padding:10px; }
+  .btn-clr:hover { border-color:var(--dim); color:var(--text); }
+
+  /* Result */
+  .result { display:none; animation: fadeIn .3s ease; }
+  .result.show { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .res-hdr { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .badge { padding:5px 14px; border-radius:6px; font-size:0.8rem; font-weight:700; letter-spacing:.5px; }
+  .badge.ready { background:var(--green); color:#fff; }
+  .badge.blocked { background:var(--red); color:#fff; }
+
+  /* Summary table */
+  .stbl { width:100%; border-collapse:collapse; }
+  .stbl td { padding:8px 0; font-size:0.85rem; }
+  .stbl tr { border-bottom:1px solid var(--border); }
+  .stbl tr:last-child { border-bottom:none; }
+  .stbl td:first-child { color:var(--dim); width:90px; white-space:nowrap; }
+  .stbl td:last-child { word-break:break-all; text-align:right; font-family:'SF Mono',Consolas,monospace; font-size:0.82rem; }
+
+  /* Issues */
+  .issue { padding:10px 14px; border-radius:8px; margin-top:8px; font-size:0.82rem; display:flex; align-items:flex-start; gap:8px; }
+  .issue.e { background:rgba(225,112,85,.12); border:1px solid rgba(225,112,85,.3); }
+  .issue.w { background:rgba(253,203,110,.1); border:1px solid rgba(253,203,110,.25); }
+  .issue .tag { font-weight:700; font-size:0.7rem; padding:2px 7px; border-radius:4px; white-space:nowrap; flex-shrink:0; }
+  .issue.e .tag { background:var(--red); color:#fff; }
+  .issue.w .tag { background:var(--orange); color:#000; }
+  .noissue { padding:10px 14px; border-radius:8px; margin-top:8px; font-size:0.82rem;
+    background:rgba(0,184,148,.1); border:1px solid rgba(0,184,148,.3); color:var(--green); }
+
+  /* Fingerprint */
+  .fpbox { text-align:center; padding:18px; margin-top:14px; background:var(--bg); border-radius:8px; border:1px dashed var(--border); }
+  .fpbox .lbl { font-size:0.7rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
+  .fpbox .fp { font-size:1.5rem; font-weight:700; color:var(--accent-light); margin-top:6px; letter-spacing:3px;
+    cursor:pointer; font-family:'SF Mono',Consolas,monospace; transition:color .15s; }
+  .fpbox .fp:hover { color:#fff; }
+  .fpbox .hint { font-size:0.65rem; color:var(--dim); margin-top:6px; }
+
+  /* Dual */
+  .dual-match { text-align:center; padding:14px; font-weight:700; font-size:0.95rem; margin-top:12px; }
+  .dual-match.yes { color:var(--green); }
+  .dual-match.no { color:var(--red); }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><span>&#x1f512;</span>Secure Token Transfer</h1>
+    <p>Verify every detail before you send</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('single')">Verify Transfer</button>
+    <button class="tab" onclick="setMode('dual')">Dual-Party Confirm</button>
+  </div>
+
+  <div class="chains" id="chainSel"></div>
+
+  <!-- ===== SINGLE MODE ===== -->
+  <div id="singleMode">
+    <div class="card">
+      <div class="card-t">Transfer Details</div>
+      <div class="row">
+        <div class="field"><label>Chain</label><input id="s_chain" readonly></div>
+        <div class="field"><label>Token</label><input id="s_token" placeholder="e.g. SOL, USDC, BTC"></div>
+      </div>
+      <div class="field"><label>Sender Address</label><input id="s_from" placeholder="Your wallet address" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Recipient Address</label><input id="s_to" placeholder="Destination wallet address" spellcheck="false" autocomplete="off"></div>
+      <div class="row">
+        <div class="field"><label>Amount</label><input id="s_amt" placeholder="0.00" inputmode="decimal"></div>
+        <div class="field"><label>Memo <span style="opacity:.5">(optional)</span></label><input id="s_memo" placeholder="Tag, note, or reference"></div>
+      </div>
+      <button class="btn btn-go" onclick="doVerify()">Verify Transfer</button>
+      <button class="btn btn-clr" onclick="resetSingle()">Clear</button>
+    </div>
+    <div class="card result" id="sResult">
+      <div class="res-hdr">
+        <div class="card-t" style="margin:0">Verification Result</div>
+        <span class="badge" id="sBadge"></span>
+      </div>
+      <table class="stbl" id="sTable"></table>
+      <div id="sIssues"></div>
+      <div class="fpbox">
+        <div class="lbl">Transfer Fingerprint</div>
+        <div class="fp" id="sFP" onclick="copyFP(this)" title="Click to copy"></div>
+        <div class="hint" id="sFPHint">Click to copy &mdash; share with recipient to confirm</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DUAL MODE ===== -->
+  <div id="dualMode" class="hidden">
+    <div class="card">
+      <div class="card-t">Sender's View</div>
+      <div class="row">
+        <div class="field"><label>Chain</label><input id="d_s_chain" readonly></div>
+        <div class="field"><label>Token</label><input id="d_s_token" placeholder="e.g. SOL"></div>
+      </div>
+      <div class="field"><label>Sender Address</label><input id="d_s_from" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Recipient Address</label><input id="d_s_to" spellcheck="false" autocomplete="off"></div>
+      <div class="row">
+        <div class="field"><label>Amount</label><input id="d_s_amt" inputmode="decimal"></div>
+        <div class="field"><label>Memo</label><input id="d_s_memo"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">Receiver's View</div>
+      <div class="row">
+        <div class="field"><label>Chain</label><input id="d_r_chain" readonly></div>
+        <div class="field"><label>Token</label><input id="d_r_token" placeholder="e.g. SOL"></div>
+      </div>
+      <div class="field"><label>Sender Address</label><input id="d_r_from" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Recipient Address</label><input id="d_r_to" spellcheck="false" autocomplete="off"></div>
+      <div class="row">
+        <div class="field"><label>Amount</label><input id="d_r_amt" inputmode="decimal"></div>
+        <div class="field"><label>Memo</label><input id="d_r_memo"></div>
+      </div>
+    </div>
+    <button class="btn btn-go" onclick="doDual()">Compare &amp; Confirm</button>
+    <button class="btn btn-clr" onclick="resetDual()">Clear Both</button>
+    <div class="card result" id="dResult" style="margin-top:16px">
+      <div class="res-hdr">
+        <div class="card-t" style="margin:0">Dual Confirmation</div>
+        <span class="badge" id="dBadge"></span>
+      </div>
+      <div id="dSummary"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// CHAIN VALIDATORS — ported from Python secure_transfer/chains.py
+// ═══════════════════════════════════════════════════════════════════
+
+const CHAINS = {
+  SOL: { decimals:9, dust:0.000001, whale:10000,
+    addrRe: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+    addrErr: (a)=>`Invalid Solana address format: '${a}'. Expected 32-44 base-58 characters.` },
+  BTC: { decimals:8, dust:0.00000546, whale:10,
+    validate(addr) {
+      const legacy = /^[13][a-km-zA-HJ-NP-Z1-9]{24,33}$/;
+      const bech32 = /^bc1[a-zA-HJ-NP-Z0-9]{25,62}$/;
+      return legacy.test(addr) || bech32.test(addr);
+    },
+    addrErr: (a)=>`Invalid Bitcoin address format: '${a}'. Expected P2PKH (1...), P2SH (3...), or Bech32 (bc1...).` },
+  ETH: { decimals:18, dust:0.0001, whale:100,
+    addrRe: /^0x[0-9a-fA-F]{40}$/,
+    addrErr: (a)=>`Invalid Ethereum address format: '${a}'. Expected '0x' followed by 40 hex characters.` },
+  SUI: { decimals:9, dust:0.001, whale:100000,
+    addrRe: /^0x[0-9a-fA-F]{64}$/,
+    addrErr: (a)=>`Invalid Sui address format: '${a}'. Expected '0x' followed by 64 hex characters.` }
+};
+
+function validateAddr(chain, addr) {
+  const v = CHAINS[chain];
+  if (!v) return null;
+  if (v.validate) return v.validate(addr.trim());
+  return v.addrRe.test(addr.trim());
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SHA-256 fingerprint (Web Crypto API)
+// ═══════════════════════════════════════════════════════════════════
+
+async function fingerprint(chain, token, from, to, amount, memo) {
+  const payload = [chain, token, from.trim(), to.trim(), amount.trim(), memo||''].join('|');
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,16);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// VERIFICATION ENGINE — ported from Python secure_transfer/core.py
+// ═══════════════════════════════════════════════════════════════════
+
+async function verify(chain, token, from, to, amount, memo) {
+  const issues = [];
+  const E = (f,m) => issues.push({sev:'ERROR', field:f, msg:m});
+  const W = (f,m) => issues.push({sev:'WARNING', field:f, msg:m});
+
+  // Required fields
+  if (!chain.trim()) E('chain', "Required field 'chain' is missing or empty");
+  if (!token.trim()) E('token', "Required field 'token' is missing or empty");
+  if (!from.trim()) E('sender_address', "Required field 'sender_address' is missing or empty");
+  if (!to.trim()) E('recipient_address', "Required field 'recipient_address' is missing or empty");
+  if (!amount.trim()) E('amount', "Required field 'amount' is missing or empty");
+  if (issues.length > 0) {
+    const fp = await fingerprint(chain, token, from, to, amount, memo);
+    return { valid: false, issues, fp };
+  }
+
+  chain = chain.trim().toUpperCase();
+  token = token.trim().toUpperCase();
+
+  // Chain support
+  const v = CHAINS[chain];
+  if (!v) { E('chain', `Unsupported chain: ${chain}`);
+    const fp = await fingerprint(chain, token, from, to, amount, memo);
+    return { valid:false, issues, fp }; }
+
+  // Address validation
+  if (!validateAddr(chain, from)) E('sender_address', v.addrErr(from.trim()));
+  if (!validateAddr(chain, to))   E('recipient_address', v.addrErr(to.trim()));
+
+  // Self-send
+  if (from.trim() === to.trim()) E('recipient_address', 'Sender and recipient addresses are identical');
+
+  // Amount
+  const num = parseFloat(amount);
+  if (isNaN(num)) { E('amount', `Invalid amount format: '${amount}'`); }
+  else if (num <= 0) { E('amount', 'Amount must be greater than zero'); }
+  else {
+    // Decimal precision
+    const parts = amount.trim().split('.');
+    const actualDec = parts.length > 1 ? parts[1].length : 0;
+    if (actualDec > v.decimals) E('amount', `Amount has ${actualDec} decimal places; max for ${token} on ${chain} is ${v.decimals}`);
+    // Dust
+    if (v.dust !== null && num < v.dust) W('amount', `Amount ${amount} is below the dust threshold (${v.dust}) for ${chain}`);
+    // Whale
+    if (v.whale !== null && num >= v.whale) W('amount', `Large transfer detected (${amount} ${token}). Double-check recipient address.`);
+  }
+
+  const hasErr = issues.some(i=>i.sev==='ERROR');
+  const fp = await fingerprint(chain, token, from, to, amount, memo);
+  return { valid: !hasErr, issues, fp };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// UI STATE
+// ═══════════════════════════════════════════════════════════════════
+
+let selChain = 'SOL';
+let mode = 'single';
+
+function init() {
+  const sel = document.getElementById('chainSel');
+  Object.keys(CHAINS).forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'cpill' + (c===selChain?' on':'');
+    b.textContent = c; b.onclick = ()=>pickChain(c);
+    sel.appendChild(b);
+  });
+  sync();
+}
+
+function pickChain(c) {
+  selChain = c;
+  document.querySelectorAll('.cpill').forEach(el=>el.classList.toggle('on', el.textContent===c));
+  sync();
+}
+
+function sync() {
+  const ids = ['s_chain','d_s_chain','d_r_chain'];
+  ids.forEach(id=>{ document.getElementById(id).value = selChain; });
+  ['s_token','d_s_token','d_r_token'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el.value || Object.keys(CHAINS).includes(el.value)) el.value = selChain;
+  });
+}
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&m==='single')||(i===1&&m==='dual')));
+  document.getElementById('singleMode').classList.toggle('hidden', m!=='single');
+  document.getElementById('dualMode').classList.toggle('hidden', m!=='dual');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SINGLE VERIFY
+// ═══════════════════════════════════════════════════════════════════
+
+async function doVerify() {
+  const chain = $('s_chain').value, token = $('s_token').value;
+  const from = $('s_from').value, to = $('s_to').value;
+  const amt = $('s_amt').value, memo = $('s_memo').value||null;
+
+  const r = await verify(chain, token, from, to, amt, memo);
+  showResult(r, {chain, token, from, to, amt, memo});
+}
+
+function showResult(r, req) {
+  const card = $('sResult'); card.classList.add('show');
+  const b = $('sBadge'); b.textContent = r.valid?'READY':'BLOCKED';
+  b.className = 'badge '+(r.valid?'ready':'blocked');
+
+  const rows = [['Chain',req.chain],['Token',req.token],['Amount',req.amt],['From',req.from],['To',req.to]];
+  if (req.memo) rows.push(['Memo',req.memo]);
+  $('sTable').innerHTML = rows.map(([k,v])=>`<tr><td>${k}</td><td>${esc(v)}</td></tr>`).join('');
+
+  if (r.issues.length===0) { $('sIssues').innerHTML = '<div class="noissue">No issues found. Transfer looks good.</div>'; }
+  else { $('sIssues').innerHTML = r.issues.map(i=>`<div class="issue ${i.sev==='ERROR'?'e':'w'}"><span class="tag">${i.sev}</span><span>${esc(i.field)}: ${esc(i.msg)}</span></div>`).join(''); }
+
+  $('sFP').textContent = r.fp;
+
+  // Highlight fields
+  ['s_from','s_to','s_amt'].forEach(id=>{$(id).classList.remove('err','ok');});
+  r.issues.forEach(i=>{
+    if(i.sev==='ERROR'){const m={sender_address:'s_from',recipient_address:'s_to',amount:'s_amt'};if(m[i.field])$(m[i.field]).classList.add('err');}
+  });
+  if(r.valid)['s_from','s_to','s_amt'].forEach(id=>$(id).classList.add('ok'));
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetSingle() {
+  ['s_token','s_from','s_to','s_amt','s_memo'].forEach(id=>{$(id).value='';$(id).classList.remove('err','ok');});
+  sync(); $('sResult').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DUAL CONFIRM
+// ═══════════════════════════════════════════════════════════════════
+
+async function doDual() {
+  const sr = await verify($('d_s_chain').value,$('d_s_token').value,$('d_s_from').value,$('d_s_to').value,$('d_s_amt').value,$('d_s_memo').value||null);
+  const rr = await verify($('d_r_chain').value,$('d_r_token').value,$('d_r_from').value,$('d_r_to').value,$('d_r_amt').value,$('d_r_memo').value||null);
+  const fpMatch = sr.fp === rr.fp;
+  const confirmed = sr.valid && rr.valid && fpMatch;
+
+  const card = $('dResult'); card.classList.add('show');
+  const b = $('dBadge'); b.textContent = confirmed?'CONFIRMED':'REJECTED';
+  b.className = 'badge '+(confirmed?'ready':'blocked');
+
+  let h = '<table class="stbl">';
+  h += `<tr><td>Sender</td><td>${sr.valid?'&#x2705; Valid':'&#x274c; Invalid'}</td></tr>`;
+  h += `<tr><td>Receiver</td><td>${rr.valid?'&#x2705; Valid':'&#x274c; Invalid'}</td></tr>`;
+  h += `<tr><td>Fingerprints</td><td>${fpMatch?'&#x2705; Match':'&#x274c; MISMATCH'}</td></tr>`;
+  h += `<tr><td>Sender FP</td><td style="color:var(--accent-light)">${sr.fp}</td></tr>`;
+  h += `<tr><td>Recvr FP</td><td style="color:var(--accent-light)">${rr.fp}</td></tr>`;
+  h += '</table>';
+
+  const allIssues = [...sr.issues,...rr.issues];
+  if(allIssues.length>0) h += allIssues.map(i=>`<div class="issue ${i.sev==='ERROR'?'e':'w'}"><span class="tag">${i.sev}</span><span>${esc(i.field)}: ${esc(i.msg)}</span></div>`).join('');
+  if(confirmed) h += '<div class="dual-match yes">Both parties agree. Safe to execute.</div>';
+  else if(!fpMatch) h += '<div class="dual-match no">Details do NOT match. Reconcile before sending.</div>';
+
+  $('dSummary').innerHTML = h;
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetDual() {
+  ['d_s_token','d_s_from','d_s_to','d_s_amt','d_s_memo','d_r_token','d_r_from','d_r_to','d_r_amt','d_r_memo'].forEach(id=>$(id).value='');
+  sync(); $('dResult').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════════
+
+function $(id){return document.getElementById(id);}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function copyFP(el){
+  navigator.clipboard.writeText(el.textContent).then(()=>{
+    const h=$('sFPHint');h.textContent='Copied!';setTimeout(()=>{h.innerHTML='Click to copy &mdash; share with recipient to confirm';},1500);
+  }).catch(()=>{});
+}
+
+init();
+</script>
+</body>
+</html>
