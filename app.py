@@ -38,6 +38,9 @@ class C:
     CYAN    = "\033[38;5;80m"
     WHITE   = "\033[38;5;255m"
     GRAY    = "\033[38;5;243m"
+    BG_RED  = "\033[48;5;52m"
+    BG_GRN  = "\033[48;5;22m"
+    BG_PUR  = "\033[48;5;54m"
 
 
 def W():
@@ -68,21 +71,27 @@ def box(lines, border=C.PURPLE):
 # ---------------------------------------------------------------------------
 
 def render_banner():
+    w = W()
     print()
-    center(f"{C.BOLD}{C.PURPLE}SECURE TOKEN TRANSFER{C.RESET}", 21)
+    hr("━")
+    print()
+    center(f"{C.BOLD}{C.PURPLE}  SECURE TOKEN TRANSFER  {C.RESET}", 24)
     center(f"{C.DIM}Verify every detail before you send{C.RESET}", 35)
+    print()
+    # Trust indicators
+    trust = f"{C.GREEN}●{C.RESET} {C.DIM}Client-Side{C.RESET}    {C.GREEN}●{C.RESET} {C.DIM}No Data Stored{C.RESET}    {C.GREEN}●{C.RESET} {C.DIM}SHA-256{C.RESET}"
+    center(trust, 50)
     print()
     hr("━")
 
 
 def render_result(result, req):
     print()
-    hr()
 
     if result.valid:
-        center(f"{C.BOLD}{C.GREEN} READY TO SEND {C.RESET}", 15)
+        center(f"{C.BOLD}{C.GREEN}  READY TO SEND  {C.RESET}", 15)
     else:
-        center(f"{C.BOLD}{C.RED} BLOCKED {C.RESET}", 9)
+        center(f"{C.BOLD}{C.RED}  BLOCKED  {C.RESET}", 9)
     print()
 
     fields = [
@@ -99,36 +108,39 @@ def render_result(result, req):
     for label, value in fields:
         lbl = f"{C.GRAY}{label:>8}{C.RESET}"
         val = f"{C.WHITE}{value}{C.RESET}"
-        lines.append((f"{lbl} : {val}", 8 + 3 + len(value)))
+        lines.append((f"{lbl}  {C.DIM}:{C.RESET}  {val}", 8 + 5 + len(value)))
     box(lines)
 
     if result.issues:
         print()
         for issue in result.issues:
             if issue.severity.value == "ERROR":
-                print(f"  {C.RED}  ERROR  {issue.field_name}: {issue.message}{C.RESET}")
+                print(f"  {C.RED}  ✗ ERROR  {C.RESET}{C.RED}{issue.field_name}: {issue.message}{C.RESET}")
             else:
-                print(f"  {C.YELLOW}  WARN   {issue.field_name}: {issue.message}{C.RESET}")
+                print(f"  {C.YELLOW}  ⚠ WARN   {C.RESET}{C.YELLOW}{issue.field_name}: {issue.message}{C.RESET}")
     else:
-        print(f"\n  {C.GREEN}  No issues found. Transfer looks good.{C.RESET}")
+        print(f"\n  {C.GREEN}  ✓ No issues found. Transfer looks good.{C.RESET}")
 
     print()
     fp = result.fingerprint
-    center(f"{C.DIM}Fingerprint:{C.RESET}  {C.BOLD}{C.PURPLE}{fp}{C.RESET}", 14 + len(fp))
+    hr("─")
+    print()
+    center(f"{C.DIM}Fingerprint{C.RESET}", 11)
+    center(f"{C.BOLD}{C.PURPLE}{fp}{C.RESET}", len(fp))
+    print()
     center(f"{C.DIM}Share with recipient to confirm details match{C.RESET}", 46)
     print()
-    hr()
+    hr("━")
     print()
 
 
 def render_dual(dual):
     print()
-    hr()
 
     if dual.confirmed:
-        center(f"{C.BOLD}{C.GREEN} CONFIRMED — SAFE TO EXECUTE {C.RESET}", 29)
+        center(f"{C.BOLD}{C.GREEN}  CONFIRMED — SAFE TO EXECUTE  {C.RESET}", 29)
     else:
-        center(f"{C.BOLD}{C.RED} REJECTED — DO NOT SEND {C.RESET}", 24)
+        center(f"{C.BOLD}{C.RED}  REJECTED — DO NOT SEND  {C.RESET}", 24)
     print()
 
     s_ok = f"{C.GREEN}VALID{C.RESET}" if dual.sender_result.valid else f"{C.RED}INVALID{C.RESET}"
@@ -139,12 +151,12 @@ def render_dual(dual):
     rfp = dual.receiver_result.fingerprint
 
     lines = [
-        (f"{C.GRAY}    Sender{C.RESET}  {s_ok}", 18),
-        (f"{C.GRAY}  Receiver{C.RESET}  {r_ok}", 20),
-        (f"{C.GRAY}        FP{C.RESET}  {fp_m}", 18),
+        (f"{C.GRAY}    Sender{C.RESET}  {C.DIM}:{C.RESET}  {s_ok}", 20),
+        (f"{C.GRAY}  Receiver{C.RESET}  {C.DIM}:{C.RESET}  {r_ok}", 22),
+        (f"{C.GRAY}        FP{C.RESET}  {C.DIM}:{C.RESET}  {fp_m}", 20),
         ("", 0),
-        (f"{C.GRAY} Sender FP{C.RESET}  {C.PURPLE}{sfp}{C.RESET}", 12 + len(sfp)),
-        (f"{C.GRAY}  Recvr FP{C.RESET}  {C.PURPLE}{rfp}{C.RESET}", 12 + len(rfp)),
+        (f"{C.GRAY} Sender FP{C.RESET}  {C.DIM}:{C.RESET}  {C.PURPLE}{sfp}{C.RESET}", 16 + len(sfp)),
+        (f"{C.GRAY}  Recvr FP{C.RESET}  {C.DIM}:{C.RESET}  {C.PURPLE}{rfp}{C.RESET}", 16 + len(rfp)),
     ]
     box(lines)
 
@@ -153,11 +165,13 @@ def render_dual(dual):
         print()
         for issue in all_issues:
             sev = issue.severity.value
-            c = C.RED if sev == "ERROR" else C.YELLOW
-            print(f"  {c}  {sev:5}  {issue.field_name}: {issue.message}{C.RESET}")
+            if sev == "ERROR":
+                print(f"  {C.RED}  ✗ ERROR  {issue.field_name}: {issue.message}{C.RESET}")
+            else:
+                print(f"  {C.YELLOW}  ⚠ WARN   {issue.field_name}: {issue.message}{C.RESET}")
 
     print()
-    hr()
+    hr("━")
     print()
 
 
@@ -205,9 +219,13 @@ def cmd_dual(args):
 
 def cmd_chains(args):
     render_banner()
-    print(f"  {C.CYAN}Supported chains:{C.RESET}\n")
+    print()
+    center(f"{C.CYAN}{C.BOLD}Supported Chains{C.RESET}", 16)
+    print()
     for chain in SUPPORTED_CHAINS:
-        print(f"    {C.PURPLE}●{C.RESET}  {C.BOLD}{C.WHITE}{chain}{C.RESET}")
+        center(f"{C.PURPLE}●{C.RESET}  {C.BOLD}{C.WHITE}{chain}{C.RESET}", 5 + len(chain))
+    print()
+    hr("━")
     print()
     return 0
 
