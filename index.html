@@ -175,6 +175,22 @@
   .row .field { flex: 1; }
   .addr-input { font-family: 'SF Mono', 'Fira Code', Consolas, monospace !important; font-size: 0.82rem !important; }
 
+  /* Memo auto-expanding textarea */
+  .memo-field {
+    width: 100%; padding: 12px 16px; background: var(--bg);
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    color: var(--text); font-size: 0.88rem; outline: none;
+    transition: all var(--transition); font-family: inherit;
+    resize: none; overflow: hidden; min-height: 44px;
+  }
+  .memo-field::placeholder { color: var(--dim); font-size: 0.84rem; }
+  .memo-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+  /* Hide number input spinners */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
   /* ─── Buttons ─── */
   .btn {
     width: 100%; padding: 15px; border: none; border-radius: var(--radius-sm);
@@ -440,15 +456,15 @@
       </div>
       <div class="field">
         <label>Sender Address</label>
-        <input id="s_from" class="addr-input" placeholder="Your wallet address" spellcheck="false" autocomplete="off">
+        <input id="s_from" class="addr-input" placeholder="e.g. 7xKX...3nPy (your wallet public key)" spellcheck="false" autocomplete="off">
       </div>
       <div class="field">
         <label>Recipient Address</label>
-        <input id="s_to" class="addr-input" placeholder="Destination wallet address" spellcheck="false" autocomplete="off">
+        <input id="s_to" class="addr-input" placeholder="e.g. 9bR2...kM4x (who you're sending to)" spellcheck="false" autocomplete="off">
       </div>
       <div class="row">
-        <div class="field"><label>Amount</label><input id="s_amt" placeholder="0.00" inputmode="decimal"></div>
-        <div class="field"><label>Memo <span class="optional">(optional)</span></label><input id="s_memo" placeholder="Tag, note, or reference"></div>
+        <div class="field"><label>Amount</label><input id="s_amt" placeholder="0.00" inputmode="decimal" type="number" step="any" min="0"></div>
+        <div class="field"><label>Memo <span class="optional">(optional)</span></label><textarea id="s_memo" class="memo-field" placeholder="Tag, note, or reference" rows="1"></textarea></div>
       </div>
       <button class="btn btn-go" id="btnVerify" onclick="doVerify()">Verify Transfer</button>
       <button class="btn btn-clr" onclick="resetSingle()">Clear</button>
@@ -479,11 +495,11 @@
         <div class="field"><label>Chain</label><input id="d_s_chain" readonly></div>
         <div class="field"><label>Token</label><input id="d_s_token" placeholder="e.g. SOL"></div>
       </div>
-      <div class="field"><label>Sender Address</label><input id="d_s_from" class="addr-input" spellcheck="false" autocomplete="off"></div>
-      <div class="field"><label>Recipient Address</label><input id="d_s_to" class="addr-input" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Sender Address</label><input id="d_s_from" class="addr-input" placeholder="e.g. 7xKX...3nPy" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Recipient Address</label><input id="d_s_to" class="addr-input" placeholder="e.g. 9bR2...kM4x" spellcheck="false" autocomplete="off"></div>
       <div class="row">
-        <div class="field"><label>Amount</label><input id="d_s_amt" inputmode="decimal"></div>
-        <div class="field"><label>Memo</label><input id="d_s_memo"></div>
+        <div class="field"><label>Amount</label><input id="d_s_amt" inputmode="decimal" type="number" step="any" min="0"></div>
+        <div class="field"><label>Memo</label><textarea id="d_s_memo" class="memo-field" rows="1"></textarea></div>
       </div>
     </div>
 
@@ -495,11 +511,11 @@
         <div class="field"><label>Chain</label><input id="d_r_chain" readonly></div>
         <div class="field"><label>Token</label><input id="d_r_token" placeholder="e.g. SOL"></div>
       </div>
-      <div class="field"><label>Sender Address</label><input id="d_r_from" class="addr-input" spellcheck="false" autocomplete="off"></div>
-      <div class="field"><label>Recipient Address</label><input id="d_r_to" class="addr-input" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Sender Address</label><input id="d_r_from" class="addr-input" placeholder="e.g. 7xKX...3nPy" spellcheck="false" autocomplete="off"></div>
+      <div class="field"><label>Recipient Address</label><input id="d_r_to" class="addr-input" placeholder="e.g. 9bR2...kM4x" spellcheck="false" autocomplete="off"></div>
       <div class="row">
-        <div class="field"><label>Amount</label><input id="d_r_amt" inputmode="decimal"></div>
-        <div class="field"><label>Memo</label><input id="d_r_memo"></div>
+        <div class="field"><label>Amount</label><input id="d_r_amt" inputmode="decimal" type="number" step="any" min="0"></div>
+        <div class="field"><label>Memo</label><textarea id="d_r_memo" class="memo-field" rows="1"></textarea></div>
       </div>
     </div>
 
@@ -835,6 +851,14 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+// Auto-expand memo textareas
+document.querySelectorAll('.memo-field').forEach(el => {
+  el.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
+  });
+});
 
 init();
 </script>
