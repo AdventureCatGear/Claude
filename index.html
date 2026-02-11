@@ -18,125 +18,78 @@
     --shadow-lg: 0 8px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-    overflow-x: hidden;
+    background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden;
   }
-
-  /* Background gradient mesh */
   body::before {
-    content: '';
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    content: ''; position: fixed; inset: 0;
     background:
       radial-gradient(ellipse 600px 400px at 20% 10%, rgba(108,92,231,0.06), transparent),
-      radial-gradient(ellipse 500px 350px at 80% 80%, rgba(0,210,160,0.04), transparent),
-      radial-gradient(ellipse 800px 600px at 50% 50%, rgba(108,92,231,0.02), transparent);
+      radial-gradient(ellipse 500px 350px at 80% 80%, rgba(0,210,160,0.04), transparent);
     pointer-events: none; z-index: 0;
   }
-
   .page { position: relative; z-index: 1; padding: 32px 20px 80px; }
   .container { max-width: 640px; margin: 0 auto; }
 
-  /* ─── Header ─── */
-  .header { text-align: center; padding: 16px 0 8px; }
-  .logo { display: inline-flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 6px; }
+  /* Header */
+  .header { text-align: center; padding: 16px 0 8px; position: relative; }
+  .header-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 6px; position: relative; }
   .logo-icon {
     width: 48px; height: 48px; border-radius: 14px;
     background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 20px var(--accent-glow);
-    position: relative;
+    box-shadow: 0 4px 20px var(--accent-glow); flex-shrink: 0;
   }
   .logo-icon svg { width: 26px; height: 26px; fill: #fff; }
-  .logo-icon::after {
-    content: ''; position: absolute; inset: -2px; border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent-light), transparent);
-    opacity: 0.3; z-index: -1;
-  }
   .header h1 {
-    font-size: 1.65rem; font-weight: 800; color: #fff;
-    letter-spacing: -0.5px;
+    font-size: 1.65rem; font-weight: 800; letter-spacing: -0.5px;
     background: linear-gradient(135deg, #fff 60%, var(--accent-light));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  .subtitle {
-    color: var(--dim); font-size: 0.82rem; margin-top: 6px;
-    font-weight: 400; letter-spacing: 0.2px;
+  .subtitle { color: var(--dim); font-size: 0.82rem; margin-top: 6px; }
+  .nav-icons {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    display: flex; gap: 4px;
   }
-
-  /* ─── Trust bar ─── */
-  .trust-bar {
-    display: flex; justify-content: center; gap: 24px;
-    margin: 20px 0 24px; flex-wrap: wrap;
+  .nav-btn {
+    width: 38px; height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--bg2); color: var(--dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
   }
-  .trust-item {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.7rem; color: var(--dim); text-transform: uppercase;
-    letter-spacing: 0.8px; font-weight: 500;
-  }
-  .trust-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--green); box-shadow: 0 0 8px var(--green-glow);
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(108,92,231,0.08); }
+  .nav-btn svg { width: 18px; height: 18px; }
+  .nav-btn .badge-count {
+    position: absolute; top: -4px; right: -4px; background: var(--accent);
+    color: #fff; font-size: 0.55rem; font-weight: 800; width: 16px; height: 16px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
   }
 
-  /* ─── Tabs ─── */
-  .tabs {
-    display: flex; gap: 0; margin: 0 0 24px; border-radius: var(--radius-sm);
-    overflow: hidden; border: 1px solid var(--border);
-    background: var(--bg2);
-  }
-  .tab {
-    flex: 1; padding: 13px 16px; text-align: center;
-    font-size: 0.82rem; font-weight: 600;
-    background: transparent; color: var(--dim); border: none;
-    cursor: pointer; transition: all var(--transition);
-    position: relative;
-    font-family: inherit;
-  }
-  .tab:not(:last-child) { border-right: 1px solid var(--border); }
-  .tab.active {
-    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-    color: #fff;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-  }
-  .tab:hover:not(.active) { color: var(--text); background: rgba(108,92,231,0.08); }
+  /* Trust bar */
+  .trust-bar { display: flex; justify-content: center; gap: 24px; margin: 20px 0 24px; flex-wrap: wrap; }
+  .trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; }
+  .trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
 
-  /* ─── Chain selector ─── */
+  /* Chain selector */
   .chain-section { margin-bottom: 24px; }
-  .chain-label {
-    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--dim); font-weight: 600; text-align: center; margin-bottom: 10px;
-  }
+  .chain-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--dim); font-weight: 600; text-align: center; margin-bottom: 10px; }
   .chains { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
   .cpill {
-    padding: 9px 22px; border-radius: 24px;
-    border: 1.5px solid var(--border); background: var(--bg2);
-    color: var(--dim); font-size: 0.82rem; font-weight: 700;
-    cursor: pointer; transition: all var(--transition);
-    letter-spacing: 0.5px;
+    padding: 9px 22px; border-radius: 24px; border: 1.5px solid var(--border);
+    background: var(--bg2); color: var(--dim); font-size: 0.82rem; font-weight: 700;
+    cursor: pointer; transition: all var(--transition); letter-spacing: 0.5px;
     font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
   }
   .cpill:hover { border-color: var(--accent); color: var(--text); transform: translateY(-1px); }
-  .cpill.on {
-    border-color: var(--accent); background: var(--accent);
-    color: #fff; box-shadow: 0 4px 16px var(--accent-glow);
-    transform: translateY(-1px);
-  }
+  .cpill.on { border-color: var(--accent); background: var(--accent); color: #fff; box-shadow: 0 4px 16px var(--accent-glow); transform: translateY(-1px); }
 
-  /* ─── Card ─── */
+  /* Card */
   .card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px;
-    margin-bottom: 16px; box-shadow: var(--shadow);
-    transition: border-color var(--transition);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow); transition: border-color var(--transition);
   }
   .card:hover { border-color: rgba(108,92,231,0.15); }
   .card-t {
@@ -144,20 +97,25 @@
     color: var(--dim); margin-bottom: 18px; font-weight: 700;
     display: flex; align-items: center; gap: 8px;
   }
-  .card-t::before {
-    content: ''; display: inline-block; width: 3px; height: 14px;
-    background: var(--accent); border-radius: 2px;
-  }
+  .card-t::before { content: ''; display: inline-block; width: 3px; height: 14px; background: var(--accent); border-radius: 2px; }
 
-  /* ─── Fields ─── */
-  .field { margin-bottom: 14px; }
+  /* Section divider */
+  .section-divider {
+    display: flex; align-items: center; gap: 16px; margin: 8px 0 16px;
+    color: var(--dim); font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 1.5px; font-weight: 600;
+  }
+  .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Fields */
+  .field { margin-bottom: 14px; position: relative; }
   .field label {
-    display: block; font-size: 0.72rem; color: var(--text-secondary);
-    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.6px;
-    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600;
   }
   .field label .optional { opacity: 0.4; font-weight: 400; text-transform: lowercase; letter-spacing: 0; }
-  .field input {
+  .field input, .field select {
     width: 100%; padding: 12px 16px; background: var(--bg);
     border: 1.5px solid var(--border); border-radius: var(--radius-sm);
     color: var(--text); font-size: 0.88rem; outline: none;
@@ -167,15 +125,61 @@
   .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
   .field input.err { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow); }
   .field input.ok { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
-  .field input[readonly] {
-    background: rgba(108,92,231,0.06); border-color: rgba(108,92,231,0.2);
-    color: var(--accent-light); font-weight: 600;
-  }
+  .field input[readonly] { background: rgba(108,92,231,0.06); border-color: rgba(108,92,231,0.2); color: var(--accent-light); font-weight: 600; }
   .row { display: flex; gap: 12px; }
   .row .field { flex: 1; }
   .addr-input { font-family: 'SF Mono', 'Fira Code', Consolas, monospace !important; font-size: 0.82rem !important; }
 
-  /* Memo auto-expanding textarea */
+  /* Field with action button (address book) */
+  .field-wrap { position: relative; }
+  .field-wrap input { padding-right: 42px; }
+  .field-action {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px; border-radius: 8px; border: none;
+    background: rgba(108,92,231,0.1); color: var(--dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+  }
+  .field-action:hover { background: rgba(108,92,231,0.2); color: var(--accent-light); }
+  .field-action svg { width: 16px; height: 16px; }
+
+  /* Info tooltip trigger */
+  .info-btn {
+    width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--dim);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; font-weight: 800; font-style: italic; color: var(--dim);
+    cursor: pointer; transition: all var(--transition); flex-shrink: 0;
+    font-family: Georgia, serif;
+  }
+  .info-btn:hover { border-color: var(--accent-light); color: var(--accent-light); }
+
+  /* Tooltip popover */
+  .tooltip {
+    position: fixed; max-width: 280px; padding: 12px 16px;
+    background: var(--card-hover); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); box-shadow: var(--shadow-lg);
+    font-size: 0.78rem; line-height: 1.6; color: var(--text-secondary);
+    z-index: 200; pointer-events: none; opacity: 0;
+    transform: translateY(4px); transition: opacity 0.15s, transform 0.15s;
+  }
+  .tooltip.show { opacity: 1; transform: none; pointer-events: auto; }
+
+  /* Field error popover */
+  .field-error {
+    font-size: 0.72rem; color: var(--red); padding: 6px 10px 0 2px;
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.25s, opacity 0.25s, padding 0.25s;
+    line-height: 1.4; display: flex; align-items: flex-start; gap: 6px;
+  }
+  .field-error.show { max-height: 80px; opacity: 1; padding-top: 6px; }
+  .field-error::before {
+    content: '!'; font-size: 0.55rem; font-weight: 800;
+    background: var(--red); color: #fff; width: 14px; height: 14px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* Memo textarea */
   .memo-field {
     width: 100%; padding: 12px 16px; background: var(--bg);
     border: 1.5px solid var(--border); border-radius: var(--radius-sm);
@@ -186,39 +190,37 @@
   .memo-field::placeholder { color: var(--dim); font-size: 0.84rem; }
   .memo-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-  /* Hide number input spinners */
+  /* Amount - hide spinners */
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   input[type="number"] { -moz-appearance: textfield; }
 
-  /* ─── Buttons ─── */
+  /* Buttons */
   .btn {
     width: 100%; padding: 15px; border: none; border-radius: var(--radius-sm);
     font-size: 0.88rem; font-weight: 700; cursor: pointer;
     transition: all var(--transition); text-transform: uppercase;
-    letter-spacing: 1.2px; font-family: inherit;
-    position: relative; overflow: hidden;
+    letter-spacing: 1.2px; font-family: inherit; position: relative; overflow: hidden;
   }
   .btn-go {
     background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     color: #fff; box-shadow: 0 4px 16px var(--accent-glow);
   }
-  .btn-go:hover {
-    box-shadow: 0 6px 24px rgba(108,92,231,0.35);
-    transform: translateY(-1px);
-  }
+  .btn-go:hover { box-shadow: 0 6px 24px rgba(108,92,231,0.35); transform: translateY(-1px); }
   .btn-go:active { transform: translateY(0) scale(0.99); }
   .btn-go::after {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-    pointer-events: none;
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); pointer-events: none;
   }
   .btn-clr {
     background: transparent; border: 1px solid var(--border);
-    color: var(--dim); margin-top: 8px; font-size: 0.75rem;
-    padding: 11px; letter-spacing: 0.8px;
+    color: var(--dim); margin-top: 8px; font-size: 0.75rem; padding: 11px; letter-spacing: 0.8px;
   }
   .btn-clr:hover { border-color: var(--dim); color: var(--text); }
+  .btn-sm {
+    width: auto; padding: 8px 18px; font-size: 0.72rem; letter-spacing: 0.6px;
+    border-radius: 8px;
+  }
   .btn-loading { pointer-events: none; opacity: 0.7; }
   .btn-loading::before {
     content: ''; display: inline-block; width: 16px; height: 16px;
@@ -228,64 +230,39 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ─── Result ─── */
+  /* Result */
   .result { display: none; }
   .result.show { display: block; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: none; }
-  }
-
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   .res-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .badge {
     padding: 6px 16px; border-radius: 8px; font-size: 0.72rem;
     font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
   }
-  .badge.ready {
-    background: linear-gradient(135deg, var(--green), #00b894);
-    color: #fff; box-shadow: 0 2px 12px var(--green-glow);
-  }
-  .badge.blocked {
-    background: linear-gradient(135deg, var(--red), #e74c3c);
-    color: #fff; box-shadow: 0 2px 12px var(--red-glow);
-  }
+  .badge.ready { background: linear-gradient(135deg, var(--green), #00b894); color: #fff; box-shadow: 0 2px 12px var(--green-glow); }
+  .badge.blocked { background: linear-gradient(135deg, var(--red), #e74c3c); color: #fff; box-shadow: 0 2px 12px var(--red-glow); }
 
-  /* ─── Summary table ─── */
+  /* Summary table */
   .stbl { width: 100%; border-collapse: collapse; }
   .stbl td { padding: 10px 0; font-size: 0.84rem; vertical-align: top; }
   .stbl tr { border-bottom: 1px solid rgba(30,33,51,0.8); }
   .stbl tr:last-child { border-bottom: none; }
-  .stbl td:first-child {
-    color: var(--dim); width: 80px; white-space: nowrap;
-    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;
-    font-weight: 600; padding-top: 12px;
-  }
-  .stbl td:last-child {
-    word-break: break-all; text-align: right;
-    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-    font-size: 0.82rem; color: #fff;
-  }
+  .stbl td:first-child { color: var(--dim); width: 80px; white-space: nowrap; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; padding-top: 12px; }
+  .stbl td:last-child { word-break: break-all; text-align: right; font-family: 'SF Mono', 'Fira Code', Consolas, monospace; font-size: 0.82rem; color: #fff; }
 
-  /* ─── Issues ─── */
+  /* Issues */
   .issues-section { margin-top: 16px; }
   .issue {
     padding: 12px 16px; border-radius: var(--radius-sm); margin-top: 8px;
     font-size: 0.82rem; display: flex; align-items: flex-start; gap: 10px;
-    transition: transform var(--transition);
   }
-  .issue:hover { transform: translateX(2px); }
   .issue.e { background: var(--red-glow); border: 1px solid rgba(255,107,107,0.2); }
   .issue.w { background: var(--orange-glow); border: 1px solid rgba(255,209,102,0.2); }
-  .issue .tag {
-    font-weight: 800; font-size: 0.62rem; padding: 3px 8px;
-    border-radius: 5px; white-space: nowrap; flex-shrink: 0;
-    letter-spacing: 0.5px;
-  }
+  .issue .tag { font-weight: 800; font-size: 0.62rem; padding: 3px 8px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.5px; }
   .issue.e .tag { background: var(--red); color: #fff; }
   .issue.w .tag { background: var(--orange); color: #1a1a2e; }
   .issue .msg { color: var(--text-secondary); line-height: 1.5; }
   .issue .msg strong { color: var(--text); font-weight: 600; }
-
   .noissue {
     padding: 14px 16px; border-radius: var(--radius-sm); margin-top: 8px;
     font-size: 0.82rem; font-weight: 500;
@@ -293,120 +270,195 @@
     color: var(--green); display: flex; align-items: center; gap: 8px;
   }
 
-  /* ─── Fingerprint ─── */
+  /* Fingerprint */
   .fpbox {
     text-align: center; padding: 24px 20px; margin-top: 20px;
     background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(108,92,231,0.02));
     border-radius: var(--radius); border: 1px dashed rgba(108,92,231,0.25);
-    position: relative;
   }
-  .fpbox .lbl {
-    font-size: 0.62rem; color: var(--dim); text-transform: uppercase;
-    letter-spacing: 2px; font-weight: 700;
-  }
+  .fpbox .lbl { font-size: 0.62rem; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
   .fp-display {
     font-size: 1.65rem; font-weight: 800; color: var(--accent-light);
-    margin-top: 10px; letter-spacing: 4px;
-    cursor: pointer; font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-    transition: all var(--transition); position: relative;
-    display: inline-block;
+    margin-top: 10px; letter-spacing: 4px; cursor: pointer;
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    transition: all var(--transition); display: inline-block;
   }
   .fp-display:hover { color: #fff; text-shadow: 0 0 20px var(--accent-glow); }
-  .fp-display:active { transform: scale(0.98); }
-  .fpbox .hint {
-    font-size: 0.65rem; color: var(--dim); margin-top: 10px;
-    transition: all var(--transition);
-  }
+  .fpbox .hint { font-size: 0.65rem; color: var(--dim); margin-top: 10px; }
   .fpbox .hint.copied { color: var(--green); }
 
-  /* ─── Dual mode ─── */
-  .dual-match {
-    text-align: center; padding: 18px; font-weight: 800;
-    font-size: 0.95rem; margin-top: 16px; border-radius: var(--radius-sm);
-    letter-spacing: 0.3px;
+  /* Recipient confirmation */
+  .confirm-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .confirm-text { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+  .confirm-result {
+    text-align: center; padding: 14px; font-weight: 800; font-size: 0.88rem;
+    margin-top: 12px; border-radius: var(--radius-sm); letter-spacing: 0.3px;
+    display: none;
   }
-  .dual-match.yes {
-    color: var(--green); background: var(--green-glow);
-    border: 1px solid rgba(0,210,160,0.2);
+  .confirm-result.yes { display: block; color: var(--green); background: var(--green-glow); border: 1px solid rgba(0,210,160,0.2); }
+  .confirm-result.no { display: block; color: var(--red); background: var(--red-glow); border: 1px solid rgba(255,107,107,0.2); }
+
+  /* Slide panels */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 90;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
   }
-  .dual-match.no {
-    color: var(--red); background: var(--red-glow);
-    border: 1px solid rgba(255,107,107,0.2);
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .panel {
+    position: fixed; top: 0; right: 0; width: 380px; height: 100vh;
+    background: var(--card); border-left: 1px solid var(--border);
+    z-index: 100; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .panel.open { transform: none; }
+  .panel-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
+  }
+  .panel-hdr h2 { font-size: 1rem; font-weight: 700; color: #fff; }
+  .close-btn {
+    width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg2); color: var(--dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    transition: all var(--transition);
+  }
+  .close-btn:hover { border-color: var(--red); color: var(--red); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+  .panel-empty { text-align: center; padding: 40px 20px; color: var(--dim); font-size: 0.82rem; }
+
+  /* Address book entries */
+  .ab-entry {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    margin-bottom: 8px; cursor: pointer; transition: all var(--transition);
+  }
+  .ab-entry:hover { border-color: var(--accent); background: rgba(108,92,231,0.05); }
+  .ab-entry-info { flex: 1; min-width: 0; }
+  .ab-entry-name { font-weight: 600; font-size: 0.84rem; color: var(--text); }
+  .ab-entry-chain { font-size: 0.65rem; color: var(--accent-light); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ab-entry-addr { font-size: 0.72rem; color: var(--dim); font-family: 'SF Mono', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ab-del {
+    width: 28px; height: 28px; border-radius: 6px; border: none;
+    background: transparent; color: var(--dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition); flex-shrink: 0; font-size: 0.9rem;
+  }
+  .ab-del:hover { background: var(--red-glow); color: var(--red); }
+  .ab-add-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .ab-add-section h3 { font-size: 0.72rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 12px; }
+
+  /* History entries */
+  .hist-entry {
+    padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    margin-bottom: 8px; transition: all var(--transition);
+  }
+  .hist-entry:hover { border-color: rgba(108,92,231,0.2); }
+  .hist-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .hist-time { font-size: 0.65rem; color: var(--dim); }
+  .hist-badge { font-size: 0.58rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+  .hist-badge.ok { background: rgba(0,210,160,0.15); color: var(--green); }
+  .hist-badge.fail { background: rgba(255,107,107,0.15); color: var(--red); }
+  .hist-detail { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 4px; }
+  .hist-detail strong { color: var(--text); }
+  .hist-fp { font-size: 0.72rem; color: var(--accent-light); font-family: 'SF Mono', monospace; letter-spacing: 1px; }
+  .hist-actions { display: flex; gap: 8px; margin-top: 8px; }
+  .hist-action {
+    padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+    background: transparent; color: var(--dim); font-size: 0.68rem; font-weight: 600;
+    cursor: pointer; transition: all var(--transition); font-family: inherit;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .hist-action:hover { border-color: var(--accent); color: var(--accent-light); }
+
+  /* Demo modal */
+  .modal {
+    position: fixed; inset: 0; z-index: 110; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.7); opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .modal.show { opacity: 1; pointer-events: auto; }
+  .modal-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px; max-width: 480px; width: 90%; box-shadow: var(--shadow-lg);
+    transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal.show .modal-box { transform: none; }
+  .modal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .modal-top h2 { font-size: 1.1rem; font-weight: 800; color: #fff; }
+  .modal-desc { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+  .demo-cards { display: flex; gap: 12px; }
+  .demo-card {
+    flex: 1; padding: 20px 16px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); cursor: pointer;
+    transition: all var(--transition); text-align: center;
+  }
+  .demo-card:hover { transform: translateY(-2px); }
+  .demo-card.success { background: rgba(0,210,160,0.04); }
+  .demo-card.success:hover { border-color: var(--green); box-shadow: 0 4px 16px var(--green-glow); }
+  .demo-card.failure { background: rgba(255,107,107,0.04); }
+  .demo-card.failure:hover { border-color: var(--red); box-shadow: 0 4px 16px var(--red-glow); }
+  .demo-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .demo-card.success .demo-icon { color: var(--green); }
+  .demo-card.failure .demo-icon { color: var(--red); }
+  .demo-card h3 { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .demo-card p { font-size: 0.72rem; color: var(--dim); line-height: 1.4; }
+
+  /* Demo banner */
+  .demo-banner {
+    display: none; padding: 10px 16px; border-radius: var(--radius-sm);
+    margin-bottom: 16px; font-size: 0.78rem; font-weight: 600;
+    align-items: center; justify-content: space-between;
+    animation: slideUp 0.3s ease;
+  }
+  .demo-banner.show { display: flex; }
+  .demo-banner.success-demo { background: rgba(0,210,160,0.08); border: 1px solid rgba(0,210,160,0.2); color: var(--green); }
+  .demo-banner.failure-demo { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); color: var(--red); }
+  .demo-banner button {
+    padding: 4px 12px; border-radius: 6px; border: 1px solid currentColor;
+    background: transparent; color: inherit; font-size: 0.68rem; font-weight: 700;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.5px;
   }
 
-  .dual-fp-compare {
-    display: flex; gap: 12px; margin-top: 12px;
-  }
-  .dual-fp-box {
-    flex: 1; text-align: center; padding: 14px;
-    background: var(--bg); border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-  }
-  .dual-fp-box .fp-label {
-    font-size: 0.6rem; color: var(--dim); text-transform: uppercase;
-    letter-spacing: 1.2px; font-weight: 700; margin-bottom: 6px;
-  }
-  .dual-fp-box .fp-value {
-    font-size: 0.92rem; font-weight: 700; color: var(--accent-light);
-    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-    letter-spacing: 1.5px;
-  }
-  .dual-fp-box.match { border-color: rgba(0,210,160,0.3); }
-  .dual-fp-box.mismatch { border-color: rgba(255,107,107,0.3); }
+  /* Demo field highlight */
+  .demo-fill { animation: demoPulse 0.4s ease; }
+  @keyframes demoPulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 50% { box-shadow: 0 0 0 6px var(--accent-glow); } 100% { box-shadow: none; } }
 
-  /* ─── Divider ─── */
-  .section-divider {
-    display: flex; align-items: center; gap: 16px;
-    margin: 8px 0 16px; color: var(--dim); font-size: 0.65rem;
-    text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;
-  }
-  .section-divider::before, .section-divider::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
-
-  /* ─── Footer ─── */
-  .footer {
-    text-align: center; padding: 32px 0 8px;
-    border-top: 1px solid var(--border); margin-top: 40px;
-  }
-  .footer p {
-    font-size: 0.68rem; color: var(--dim); line-height: 1.8;
-    letter-spacing: 0.3px;
-  }
-  .footer .secure-note {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 0.65rem; color: var(--dim);
-    background: rgba(0,210,160,0.06); padding: 6px 14px;
-    border-radius: 20px; margin-top: 10px;
-    border: 1px solid rgba(0,210,160,0.1);
-  }
-  .footer .secure-note svg { width: 12px; height: 12px; fill: var(--green); }
-
-  /* ─── Toast ─── */
+  /* Toast */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--card); border: 1px solid var(--border);
     padding: 12px 24px; border-radius: var(--radius-sm);
     font-size: 0.82rem; font-weight: 600; color: var(--text);
-    box-shadow: var(--shadow-lg); z-index: 100;
+    box-shadow: var(--shadow-lg); z-index: 200;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
     opacity: 0; pointer-events: none;
   }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+  /* Footer */
+  .footer { text-align: center; padding: 32px 0 8px; border-top: 1px solid var(--border); margin-top: 40px; }
+  .footer p { font-size: 0.68rem; color: var(--dim); line-height: 1.8; letter-spacing: 0.3px; }
+  .footer .secure-note {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.65rem; color: var(--dim); background: rgba(0,210,160,0.06);
+    padding: 6px 14px; border-radius: 20px; margin-top: 10px;
+    border: 1px solid rgba(0,210,160,0.1);
+  }
+  .footer .secure-note svg { width: 12px; height: 12px; fill: var(--green); }
+
   .hidden { display: none !important; }
 
-  /* ─── Responsive ─── */
+  /* Responsive */
   @media (max-width: 520px) {
     .page { padding: 16px 12px 60px; }
-    .header h1 { font-size: 1.3rem; }
-    .logo-icon { width: 40px; height: 40px; border-radius: 12px; }
-    .logo-icon svg { width: 22px; height: 22px; }
+    .header h1 { font-size: 1.2rem; }
+    .nav-icons { position: static; transform: none; margin-top: 12px; justify-content: center; }
+    .header-row { flex-wrap: wrap; justify-content: center; }
     .row { flex-direction: column; gap: 0; }
     .card { padding: 18px 16px; }
     .fp-display { font-size: 1.2rem; letter-spacing: 2px; }
     .trust-bar { gap: 16px; }
-    .dual-fp-compare { flex-direction: column; }
+    .panel { width: 100%; }
+    .demo-cards { flex-direction: column; }
   }
 </style>
 </head>
@@ -414,126 +466,137 @@
 <div class="page">
 <div class="container">
 
-  <!-- ═══ HEADER ═══ -->
+  <!-- Header -->
   <div class="header">
-    <div class="logo">
+    <div class="header-row">
       <div class="logo-icon">
         <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.23 9.36-7 10.57-3.77-1.21-7-5.74-7-10.57V6.3l7-3.12zm-1 5.82v2h2v-2h-2zm0 4v4h2v-4h-2z"/></svg>
       </div>
       <h1>Secure Token Transfer</h1>
+      <div class="nav-icons">
+        <button class="nav-btn" onclick="openDemo()" title="Interactive Demo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="nav-btn" onclick="openPanel('ab')" title="Address Book" style="position:relative">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          <span class="badge-count" id="abCount" style="display:none">0</span>
+        </button>
+        <button class="nav-btn" onclick="openPanel('hist')" title="Transfer History" style="position:relative">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          <span class="badge-count" id="histCount" style="display:none">0</span>
+        </button>
+      </div>
     </div>
     <p class="subtitle">Verify every detail before you send</p>
   </div>
 
-  <!-- ═══ TRUST BAR ═══ -->
+  <!-- Trust bar -->
   <div class="trust-bar">
     <div class="trust-item"><div class="trust-dot"></div>Client-Side Only</div>
     <div class="trust-item"><div class="trust-dot"></div>No Data Stored</div>
     <div class="trust-item"><div class="trust-dot"></div>SHA-256 Verified</div>
   </div>
 
-  <!-- ═══ TABS ═══ -->
-  <div class="tabs">
-    <button class="tab active" onclick="setMode('single')">Verify Transfer</button>
-    <button class="tab" onclick="setMode('dual')">Dual-Party Confirm</button>
+  <!-- Demo banner -->
+  <div class="demo-banner" id="demoBanner">
+    <span id="demoBannerText"></span>
+    <button onclick="exitDemo()">Exit Demo</button>
   </div>
 
-  <!-- ═══ CHAIN SELECTOR ═══ -->
+  <!-- Chain selector -->
   <div class="chain-section">
     <div class="chain-label">Select Blockchain</div>
     <div class="chains" id="chainSel"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- SINGLE MODE                                                     -->
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div id="singleMode">
-    <div class="card">
-      <div class="card-t">Transfer Details</div>
-      <div class="row">
-        <div class="field"><label>Chain</label><input id="s_chain" readonly></div>
-        <div class="field"><label>Token</label><input id="s_token" placeholder="e.g. SOL, USDC, BTC"></div>
+  <!-- Transfer form -->
+  <div class="card" id="formCard">
+    <div class="card-t">Transfer Details</div>
+    <div class="row">
+      <div class="field">
+        <label>Chain <span class="info-btn" onclick="showTip(event,'chain')">i</span></label>
+        <input id="f_chain" readonly>
       </div>
       <div class="field">
-        <label>Sender Address</label>
-        <input id="s_from" class="addr-input" placeholder="e.g. 7xKX...3nPy (your wallet public key)" spellcheck="false" autocomplete="off">
+        <label>Token <span class="info-btn" onclick="showTip(event,'token')">i</span></label>
+        <input id="f_token" placeholder="e.g. SOL, USDC, BTC">
+        <div class="field-error" data-field="token"></div>
       </div>
-      <div class="field">
-        <label>Recipient Address</label>
-        <input id="s_to" class="addr-input" placeholder="e.g. 9bR2...kM4x (who you're sending to)" spellcheck="false" autocomplete="off">
-      </div>
-      <div class="row">
-        <div class="field"><label>Amount</label><input id="s_amt" placeholder="0.00" inputmode="decimal" type="number" step="any" min="0"></div>
-        <div class="field"><label>Memo <span class="optional">(optional)</span></label><textarea id="s_memo" class="memo-field" placeholder="Tag, note, or reference" rows="1"></textarea></div>
-      </div>
-      <button class="btn btn-go" id="btnVerify" onclick="doVerify()">Verify Transfer</button>
-      <button class="btn btn-clr" onclick="resetSingle()">Clear</button>
     </div>
 
-    <div class="card result" id="sResult">
-      <div class="res-hdr">
-        <div class="card-t" style="margin:0">Verification Result</div>
-        <span class="badge" id="sBadge"></span>
+    <div class="section-divider">Sender</div>
+    <div class="field">
+      <label>Sender Address <span class="info-btn" onclick="showTip(event,'sender')">i</span></label>
+      <div class="field-wrap">
+        <input id="f_from" class="addr-input" placeholder="Your wallet public key (e.g. 7xKX...3nPy)" spellcheck="false" autocomplete="off">
+        <button class="field-action" onclick="openPanel('ab','f_from')" title="Choose from Address Book">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </button>
       </div>
-      <table class="stbl" id="sTable"></table>
-      <div id="sIssues" class="issues-section"></div>
-      <div class="fpbox">
-        <div class="lbl">Transfer Fingerprint</div>
-        <div class="fp-display" id="sFP" onclick="copyFP(this)" title="Click to copy"></div>
-        <div class="hint" id="sFPHint">Click fingerprint to copy — share with recipient to confirm</div>
+      <div class="field-error" data-field="sender_address"></div>
+    </div>
+
+    <div class="section-divider">Recipient</div>
+    <div class="field">
+      <label>Recipient Address <span class="info-btn" onclick="showTip(event,'recipient')">i</span></label>
+      <div class="field-wrap">
+        <input id="f_to" class="addr-input" placeholder="Destination wallet (e.g. 9bR2...kM4x)" spellcheck="false" autocomplete="off">
+        <button class="field-action" onclick="openPanel('ab','f_to')" title="Choose from Address Book">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </button>
       </div>
+      <div class="field-error" data-field="recipient_address"></div>
+    </div>
+
+    <div class="section-divider">Amount & Memo</div>
+    <div class="row">
+      <div class="field">
+        <label>Amount <span class="info-btn" onclick="showTip(event,'amount')">i</span></label>
+        <input id="f_amt" type="text" inputmode="decimal" placeholder="0.00">
+        <div class="field-error" data-field="amount"></div>
+      </div>
+      <div class="field">
+        <label>Memo <span class="info-btn" onclick="showTip(event,'memo')">i</span> <span class="optional">(optional)</span></label>
+        <textarea id="f_memo" class="memo-field" placeholder="Tag, note, or reference" rows="1"></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-go" id="btnVerify" onclick="doVerify()">Verify & Confirm Transfer</button>
+    <button class="btn btn-clr" onclick="resetForm()">Clear</button>
+  </div>
+
+  <!-- Result -->
+  <div class="card result" id="resultCard">
+    <div class="res-hdr">
+      <div class="card-t" style="margin:0">Verification Result</div>
+      <span class="badge" id="resBadge"></span>
+    </div>
+    <table class="stbl" id="resTable"></table>
+    <div id="resIssues" class="issues-section"></div>
+
+    <!-- Fingerprint (success only) -->
+    <div id="fpSection" class="fpbox" style="display:none">
+      <div class="lbl">Transfer Fingerprint</div>
+      <div class="fp-display" id="resFP" onclick="copyFP(this)" title="Click to copy"></div>
+      <div class="hint" id="fpHint">Click fingerprint to copy &mdash; share with recipient to confirm</div>
+    </div>
+
+    <!-- Recipient confirmation (success only) -->
+    <div id="confirmSection" class="confirm-section" style="display:none">
+      <div class="section-divider">Recipient Confirmation</div>
+      <p class="confirm-text">Share the fingerprint above with your recipient. They can verify the same transfer details on their end and compare fingerprints. Paste theirs below to check:</p>
+      <div class="field" style="margin-bottom:0">
+        <div class="field-wrap">
+          <input id="recipientFP" class="addr-input" placeholder="Paste recipient's fingerprint to compare" oninput="checkFPMatch()">
+        </div>
+      </div>
+      <div class="confirm-result" id="confirmResult"></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- DUAL MODE                                                       -->
-  <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div id="dualMode" class="hidden">
-    <div class="card">
-      <div class="card-t">Sender's View</div>
-      <div class="row">
-        <div class="field"><label>Chain</label><input id="d_s_chain" readonly></div>
-        <div class="field"><label>Token</label><input id="d_s_token" placeholder="e.g. SOL"></div>
-      </div>
-      <div class="field"><label>Sender Address</label><input id="d_s_from" class="addr-input" placeholder="e.g. 7xKX...3nPy" spellcheck="false" autocomplete="off"></div>
-      <div class="field"><label>Recipient Address</label><input id="d_s_to" class="addr-input" placeholder="e.g. 9bR2...kM4x" spellcheck="false" autocomplete="off"></div>
-      <div class="row">
-        <div class="field"><label>Amount</label><input id="d_s_amt" inputmode="decimal" type="number" step="any" min="0"></div>
-        <div class="field"><label>Memo</label><textarea id="d_s_memo" class="memo-field" rows="1"></textarea></div>
-      </div>
-    </div>
-
-    <div class="section-divider">vs</div>
-
-    <div class="card">
-      <div class="card-t">Receiver's View</div>
-      <div class="row">
-        <div class="field"><label>Chain</label><input id="d_r_chain" readonly></div>
-        <div class="field"><label>Token</label><input id="d_r_token" placeholder="e.g. SOL"></div>
-      </div>
-      <div class="field"><label>Sender Address</label><input id="d_r_from" class="addr-input" placeholder="e.g. 7xKX...3nPy" spellcheck="false" autocomplete="off"></div>
-      <div class="field"><label>Recipient Address</label><input id="d_r_to" class="addr-input" placeholder="e.g. 9bR2...kM4x" spellcheck="false" autocomplete="off"></div>
-      <div class="row">
-        <div class="field"><label>Amount</label><input id="d_r_amt" inputmode="decimal" type="number" step="any" min="0"></div>
-        <div class="field"><label>Memo</label><textarea id="d_r_memo" class="memo-field" rows="1"></textarea></div>
-      </div>
-    </div>
-
-    <button class="btn btn-go" id="btnDual" onclick="doDual()">Compare &amp; Confirm</button>
-    <button class="btn btn-clr" onclick="resetDual()">Clear Both</button>
-
-    <div class="card result" id="dResult" style="margin-top:16px">
-      <div class="res-hdr">
-        <div class="card-t" style="margin:0">Dual Confirmation</div>
-        <span class="badge" id="dBadge"></span>
-      </div>
-      <div id="dSummary"></div>
-    </div>
-  </div>
-
-  <!-- ═══ FOOTER ═══ -->
+  <!-- Footer -->
   <div class="footer">
-    <p>Verification only — no transactions are broadcast from this tool.</p>
+    <p>Verification only &mdash; no transactions are broadcast from this tool.</p>
     <div class="secure-note">
       <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
       All computations run locally in your browser
@@ -542,38 +605,95 @@
 </div>
 </div>
 
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
+
+<!-- Address Book Panel -->
+<div class="panel" id="abPanel">
+  <div class="panel-hdr">
+    <h2>Address Book</h2>
+    <button class="close-btn" onclick="closeAllPanels()">&times;</button>
+  </div>
+  <div class="panel-body">
+    <div id="abList"></div>
+    <div class="ab-add-section">
+      <h3>Save New Address</h3>
+      <div class="field"><label>Name</label><input id="ab_name" placeholder="e.g. My Phantom Wallet"></div>
+      <div class="field"><label>Chain</label><input id="ab_chain" readonly></div>
+      <div class="field"><label>Address</label><input id="ab_addr" class="addr-input" placeholder="Wallet address" spellcheck="false"></div>
+      <button class="btn btn-go btn-sm" onclick="saveAddress()" style="width:100%">Save to Address Book</button>
+    </div>
+  </div>
+</div>
+
+<!-- History Panel -->
+<div class="panel" id="histPanel">
+  <div class="panel-hdr">
+    <h2>Transfer History</h2>
+    <button class="close-btn" onclick="closeAllPanels()">&times;</button>
+  </div>
+  <div class="panel-body">
+    <div id="histList"></div>
+    <button class="btn btn-clr" onclick="clearHistory()" style="margin-top:16px">Clear History</button>
+  </div>
+</div>
+
+<!-- Demo Modal -->
+<div class="modal" id="demoModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h2>Interactive Demo</h2>
+      <button class="close-btn" onclick="closeDemo()">&times;</button>
+    </div>
+    <p class="modal-desc">See how Secure Token Transfer works with pre-filled example data. Pick a scenario:</p>
+    <div class="demo-cards">
+      <div class="demo-card success" onclick="runDemo('success')">
+        <div class="demo-icon">&#10003;</div>
+        <h3>Successful Transfer</h3>
+        <p>Valid 2.5 SOL transfer with all checks passing</p>
+      </div>
+      <div class="demo-card failure" onclick="runDemo('failure')">
+        <div class="demo-icon">&#10007;</div>
+        <h3>Failed Transfer</h3>
+        <p>Invalid addresses and amount caught with detailed errors</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════
-// CHAIN VALIDATORS — ported from Python secure_transfer/chains.py
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// CHAIN VALIDATORS
+// ═══════════════════════════════════════════════════════════
 
 const CHAINS = {
   SOL: {
     decimals: 9, dust: 0.000001, whale: 10000,
     addrRe: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
-    addrErr: (a) => `Invalid Solana address format: '${a}'. Expected 32-44 base-58 characters.`
+    addrErr: (a) => `Invalid Solana address. Expected 32-44 base-58 characters (no 0, O, I, l).`
   },
   BTC: {
     decimals: 8, dust: 0.00000546, whale: 10,
     validate(addr) {
-      const legacy = /^[13][a-km-zA-HJ-NP-Z1-9]{24,33}$/;
-      const bech32 = /^bc1[a-zA-HJ-NP-Z0-9]{25,62}$/;
-      return legacy.test(addr) || bech32.test(addr);
+      return /^[13][a-km-zA-HJ-NP-Z1-9]{24,33}$/.test(addr) || /^bc1[a-zA-HJ-NP-Z0-9]{25,62}$/.test(addr);
     },
-    addrErr: (a) => `Invalid Bitcoin address format: '${a}'. Expected P2PKH (1...), P2SH (3...), or Bech32 (bc1...).`
+    addrErr: (a) => `Invalid Bitcoin address. Expected P2PKH (1...), P2SH (3...), or Bech32 (bc1...).`
   },
   ETH: {
     decimals: 18, dust: 0.0001, whale: 100,
     addrRe: /^0x[0-9a-fA-F]{40}$/,
-    addrErr: (a) => `Invalid Ethereum address format: '${a}'. Expected '0x' followed by 40 hex characters.`
+    addrErr: (a) => `Invalid Ethereum address. Expected '0x' followed by exactly 40 hex characters.`
   },
   SUI: {
     decimals: 9, dust: 0.001, whale: 100000,
     addrRe: /^0x[0-9a-fA-F]{64}$/,
-    addrErr: (a) => `Invalid Sui address format: '${a}'. Expected '0x' followed by 64 hex characters.`
+    addrErr: (a) => `Invalid Sui address. Expected '0x' followed by exactly 64 hex characters.`
   }
 };
 
@@ -584,9 +704,9 @@ function validateAddr(chain, addr) {
   return v.addrRe.test(addr.trim());
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// SHA-256 fingerprint (Web Crypto API)
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// SHA-256 FINGERPRINT
+// ═══════════════════════════════════════════════════════════
 
 async function fingerprint(chain, token, from, to, amount, memo) {
   const payload = [chain, token, from.trim(), to.trim(), amount.trim(), memo || ''].join('|');
@@ -594,21 +714,21 @@ async function fingerprint(chain, token, from, to, amount, memo) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// VERIFICATION ENGINE — ported from Python secure_transfer/core.py
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// VERIFICATION ENGINE
+// ═══════════════════════════════════════════════════════════
 
 async function verify(chain, token, from, to, amount, memo) {
   const issues = [];
   const E = (f, m) => issues.push({ sev: 'ERROR', field: f, msg: m });
   const W = (f, m) => issues.push({ sev: 'WARNING', field: f, msg: m });
 
-  // Required fields
-  if (!chain.trim()) E('chain', "Required field 'chain' is missing or empty");
-  if (!token.trim()) E('token', "Required field 'token' is missing or empty");
-  if (!from.trim()) E('sender_address', "Required field 'sender_address' is missing or empty");
-  if (!to.trim()) E('recipient_address', "Required field 'recipient_address' is missing or empty");
-  if (!amount.trim()) E('amount', "Required field 'amount' is missing or empty");
+  if (!chain.trim()) E('chain', "Required field 'chain' is missing");
+  if (!token.trim()) E('token', "Required field 'token' is missing");
+  if (!from.trim()) E('sender_address', "Sender address is required");
+  if (!to.trim()) E('recipient_address', "Recipient address is required");
+  if (!amount.trim()) E('amount', "Amount is required");
+
   if (issues.length > 0) {
     const fp = await fingerprint(chain, token, from, to, amount, memo);
     return { valid: false, issues, fp };
@@ -617,31 +737,26 @@ async function verify(chain, token, from, to, amount, memo) {
   chain = chain.trim().toUpperCase();
   token = token.trim().toUpperCase();
 
-  // Chain support
   const v = CHAINS[chain];
   if (!v) {
-    E('chain', `Unsupported chain: ${chain}`);
+    E('chain', `Unsupported chain: ${chain}. Supported: ${Object.keys(CHAINS).join(', ')}`);
     const fp = await fingerprint(chain, token, from, to, amount, memo);
     return { valid: false, issues, fp };
   }
 
-  // Address validation
   if (!validateAddr(chain, from)) E('sender_address', v.addrErr(from.trim()));
   if (!validateAddr(chain, to)) E('recipient_address', v.addrErr(to.trim()));
+  if (from.trim() === to.trim() && from.trim()) E('recipient_address', 'Sender and recipient addresses are identical. You cannot send to yourself.');
 
-  // Self-send
-  if (from.trim() === to.trim()) E('recipient_address', 'Sender and recipient addresses are identical');
-
-  // Amount
   const num = parseFloat(amount);
-  if (isNaN(num)) { E('amount', `Invalid amount format: '${amount}'`); }
-  else if (num <= 0) { E('amount', 'Amount must be greater than zero'); }
+  if (isNaN(num)) { E('amount', `'${amount}' is not a valid number.`); }
+  else if (num <= 0) { E('amount', 'Amount must be greater than zero.'); }
   else {
     const parts = amount.trim().split('.');
     const actualDec = parts.length > 1 ? parts[1].length : 0;
-    if (actualDec > v.decimals) E('amount', `Amount has ${actualDec} decimal places; max for ${token} on ${chain} is ${v.decimals}`);
-    if (v.dust !== null && num < v.dust) W('amount', `Amount ${amount} is below the dust threshold (${v.dust}) for ${chain}`);
-    if (v.whale !== null && num >= v.whale) W('amount', `Large transfer detected (${amount} ${token}). Double-check recipient address.`);
+    if (actualDec > v.decimals) E('amount', `Too many decimal places (${actualDec}). Max for ${chain} is ${v.decimals}.`);
+    if (v.dust !== null && num < v.dust) W('amount', `Amount ${amount} is below the dust threshold (${v.dust}) for ${chain}. Transaction may be rejected by the network.`);
+    if (v.whale !== null && num >= v.whale) W('amount', `Large transfer detected (${amount} ${token}). Please double-check the recipient address carefully.`);
   }
 
   const hasErr = issues.some(i => i.sev === 'ERROR');
@@ -649,15 +764,69 @@ async function verify(chain, token, from, to, amount, memo) {
   return { valid: !hasErr, issues, fp };
 }
 
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// TOOLTIPS
+// ═══════════════════════════════════════════════════════════
+
+const TIPS = {
+  chain: "The blockchain network for this transfer. Each chain (Solana, Ethereum, Bitcoin, Sui) has different address formats, fees, and speed.",
+  token: "The cryptocurrency or token being sent. Usually matches the chain's native token (SOL, ETH, BTC) but can be any token on that network (e.g. USDC).",
+  sender: "Your wallet's public address. Find this in your wallet app (Phantom, MetaMask, etc). This is safe to share \u2014 it's like an account number, not a password.",
+  recipient: "The wallet address you're sending to. Always double-check every character! Sending to the wrong address is usually irreversible.",
+  amount: "How many tokens to send. The tool checks for dust amounts (too small for the network) and flags unusually large transfers as a safety check.",
+  memo: "Optional note, tag, or reference ID. Some exchanges require a memo for deposits \u2014 forgetting it can mean lost funds. Leave blank if not needed."
+};
+
+function showTip(e, key) {
+  e.stopPropagation();
+  const tip = Q('tooltip');
+  if (tip.dataset.active === key) { closeTip(); return; }
+  tip.textContent = TIPS[key];
+  tip.dataset.active = key;
+  const rect = e.target.getBoundingClientRect();
+  tip.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+  const left = Math.max(16, Math.min(rect.left, window.innerWidth - 296));
+  tip.style.left = left + 'px';
+  tip.classList.add('show');
+}
+function closeTip() { const t = Q('tooltip'); t.classList.remove('show'); t.dataset.active = ''; }
+document.addEventListener('click', closeTip);
+
+// ═══════════════════════════════════════════════════════════
+// FIELD ERRORS
+// ═══════════════════════════════════════════════════════════
+
+const FIELD_INPUT_MAP = {
+  chain: 'f_chain', token: 'f_token',
+  sender_address: 'f_from', recipient_address: 'f_to', amount: 'f_amt'
+};
+
+function showFieldErrors(issues) {
+  clearFieldErrors();
+  issues.forEach(i => {
+    if (i.sev !== 'ERROR') return;
+    const el = document.querySelector(`.field-error[data-field="${i.field}"]`);
+    if (el) { el.textContent = i.msg; el.classList.add('show'); }
+    const inputId = FIELD_INPUT_MAP[i.field];
+    if (inputId) Q(inputId).classList.add('err');
+  });
+}
+
+function clearFieldErrors() {
+  document.querySelectorAll('.field-error').forEach(el => { el.textContent = ''; el.classList.remove('show'); });
+  ['f_chain', 'f_token', 'f_from', 'f_to', 'f_amt'].forEach(id => Q(id).classList.remove('err', 'ok'));
+}
+
+// ═══════════════════════════════════════════════════════════
 // UI STATE
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 
 let selChain = 'SOL';
-let mode = 'single';
+let abTarget = null; // which field the address book fills
+let lastFP = null;
 
 function init() {
-  const sel = document.getElementById('chainSel');
+  const sel = Q('chainSel');
   Object.keys(CHAINS).forEach(c => {
     const b = document.createElement('button');
     b.className = 'cpill' + (c === selChain ? ' on' : '');
@@ -665,200 +834,393 @@ function init() {
     b.onclick = () => pickChain(c);
     sel.appendChild(b);
   });
-  sync();
+  syncChain();
+  updateBadgeCounts();
+
+  // Amount field: strip non-numeric
+  Q('f_amt').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+  });
+
+  // Auto-expand memos
+  document.querySelectorAll('.memo-field').forEach(el => {
+    el.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; });
+  });
 }
 
 function pickChain(c) {
   selChain = c;
   document.querySelectorAll('.cpill').forEach(el => el.classList.toggle('on', el.textContent === c));
-  sync();
+  syncChain();
 }
 
-function sync() {
-  ['s_chain', 'd_s_chain', 'd_r_chain'].forEach(id => {
-    document.getElementById(id).value = selChain;
-  });
-  ['s_token', 'd_s_token', 'd_r_token'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el.value || Object.keys(CHAINS).includes(el.value)) el.value = selChain;
-  });
+function syncChain() {
+  Q('f_chain').value = selChain;
+  Q('ab_chain').value = selChain;
+  const tok = Q('f_token');
+  if (!tok.value || Object.keys(CHAINS).includes(tok.value)) tok.value = selChain;
 }
 
-function setMode(m) {
-  mode = m;
-  document.querySelectorAll('.tab').forEach((t, i) =>
-    t.classList.toggle('active', (i === 0 && m === 'single') || (i === 1 && m === 'dual')));
-  document.getElementById('singleMode').classList.toggle('hidden', m !== 'single');
-  document.getElementById('dualMode').classList.toggle('hidden', m !== 'dual');
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// SINGLE VERIFY
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// VERIFY FLOW
+// ═══════════════════════════════════════════════════════════
 
 async function doVerify() {
-  const btn = $('btnVerify');
+  const btn = Q('btnVerify');
   btn.classList.add('btn-loading');
   btn.textContent = 'Verifying...';
+  clearFieldErrors();
 
-  const chain = $('s_chain').value, token = $('s_token').value;
-  const from = $('s_from').value, to = $('s_to').value;
-  const amt = $('s_amt').value, memo = $('s_memo').value || null;
+  const chain = Q('f_chain').value, token = Q('f_token').value;
+  const from = Q('f_from').value, to = Q('f_to').value;
+  const amt = Q('f_amt').value, memo = Q('f_memo').value || null;
 
-  // Brief delay for visual feedback
   await new Promise(r => setTimeout(r, 300));
-
   const r = await verify(chain, token, from, to, amt, memo);
+
   showResult(r, { chain, token, from, to, amt, memo });
+  showFieldErrors(r.issues);
+  if (r.valid) {
+    ['f_from', 'f_to', 'f_amt'].forEach(id => Q(id).classList.add('ok'));
+  }
+
+  // Save to history
+  saveToHistory({ chain, token, from, to, amount: amt, memo, fingerprint: r.fp, valid: r.valid, issues: r.issues });
 
   btn.classList.remove('btn-loading');
-  btn.textContent = 'Verify Transfer';
+  btn.textContent = 'Verify & Confirm Transfer';
 }
 
 function showResult(r, req) {
-  const card = $('sResult');
+  const card = Q('resultCard');
   card.classList.add('show');
-  const b = $('sBadge');
-  b.textContent = r.valid ? 'READY' : 'BLOCKED';
+
+  const b = Q('resBadge');
+  b.textContent = r.valid ? 'VERIFIED' : 'ISSUES FOUND';
   b.className = 'badge ' + (r.valid ? 'ready' : 'blocked');
 
-  const rows = [
-    ['Chain', req.chain], ['Token', req.token], ['Amount', req.amt],
-    ['From', req.from], ['To', req.to]
-  ];
+  const rows = [['Chain', req.chain], ['Token', req.token], ['Amount', req.amt], ['From', req.from], ['To', req.to]];
   if (req.memo) rows.push(['Memo', req.memo]);
-  $('sTable').innerHTML = rows.map(([k, v]) =>
-    `<tr><td>${k}</td><td>${esc(v)}</td></tr>`
-  ).join('');
+  Q('resTable').innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td>${esc(v)}</td></tr>`).join('');
 
   if (r.issues.length === 0) {
-    $('sIssues').innerHTML = '<div class="noissue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No issues found. Transfer looks good.</div>';
+    Q('resIssues').innerHTML = '<div class="noissue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All checks passed. Transfer looks good.</div>';
   } else {
-    $('sIssues').innerHTML = r.issues.map(i =>
+    Q('resIssues').innerHTML = r.issues.map(i =>
       `<div class="issue ${i.sev === 'ERROR' ? 'e' : 'w'}"><span class="tag">${i.sev}</span><span class="msg"><strong>${esc(i.field)}</strong>: ${esc(i.msg)}</span></div>`
     ).join('');
   }
 
-  $('sFP').textContent = r.fp;
+  // Fingerprint: only on success
+  const fpSec = Q('fpSection');
+  const confirmSec = Q('confirmSection');
+  if (r.valid) {
+    lastFP = r.fp;
+    Q('resFP').textContent = r.fp;
+    fpSec.style.display = '';
+    confirmSec.style.display = '';
+    Q('recipientFP').value = '';
+    Q('confirmResult').className = 'confirm-result';
+    Q('confirmResult').textContent = '';
+  } else {
+    lastFP = null;
+    fpSec.style.display = 'none';
+    confirmSec.style.display = 'none';
+  }
 
-  // Highlight fields
-  ['s_from', 's_to', 's_amt'].forEach(id => { $(id).classList.remove('err', 'ok'); });
-  r.issues.forEach(i => {
-    if (i.sev === 'ERROR') {
-      const m = { sender_address: 's_from', recipient_address: 's_to', amount: 's_amt' };
-      if (m[i.field]) $(m[i.field]).classList.add('err');
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function checkFPMatch() {
+  const input = Q('recipientFP').value.trim().toLowerCase();
+  const el = Q('confirmResult');
+  if (!input || !lastFP) { el.className = 'confirm-result'; el.textContent = ''; return; }
+  if (input === lastFP) {
+    el.className = 'confirm-result yes';
+    el.textContent = 'Fingerprints match! Both parties agree on transfer details.';
+  } else {
+    el.className = 'confirm-result no';
+    el.textContent = 'Fingerprints do NOT match. Transfer details differ between parties.';
+  }
+}
+
+function resetForm() {
+  ['f_token', 'f_from', 'f_to', 'f_amt'].forEach(id => Q(id).value = '');
+  Q('f_memo').value = '';
+  Q('f_memo').style.height = 'auto';
+  clearFieldErrors();
+  syncChain();
+  Q('resultCard').classList.remove('show');
+  exitDemo();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADDRESS BOOK (localStorage)
+// ═══════════════════════════════════════════════════════════
+
+function getAddressBook() {
+  try { return JSON.parse(localStorage.getItem('stx_addressbook') || '[]'); } catch { return []; }
+}
+function setAddressBook(data) { localStorage.setItem('stx_addressbook', JSON.stringify(data)); updateBadgeCounts(); }
+
+function openPanel(type, targetField) {
+  if (type === 'ab') {
+    abTarget = targetField || null;
+    Q('ab_chain').value = selChain;
+    if (abTarget) {
+      const currentVal = Q(abTarget).value.trim();
+      if (currentVal) Q('ab_addr').value = currentVal;
     }
-  });
-  if (r.valid) ['s_from', 's_to', 's_amt'].forEach(id => $(id).classList.add('ok'));
-  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    renderAddressBook();
+    Q('abPanel').classList.add('open');
+  } else {
+    renderHistory();
+    Q('histPanel').classList.add('open');
+  }
+  Q('overlay').classList.add('show');
 }
 
-function resetSingle() {
-  ['s_token', 's_from', 's_to', 's_amt', 's_memo'].forEach(id => {
-    $(id).value = ''; $(id).classList.remove('err', 'ok');
-  });
-  sync();
-  $('sResult').classList.remove('show');
+function closeAllPanels() {
+  Q('abPanel').classList.remove('open');
+  Q('histPanel').classList.remove('open');
+  Q('overlay').classList.remove('show');
+  abTarget = null;
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// DUAL CONFIRM
-// ═══════════════════════════════════════════════════════════════════════
+function renderAddressBook() {
+  const entries = getAddressBook();
+  const list = Q('abList');
+  if (entries.length === 0) {
+    list.innerHTML = '<div class="panel-empty">No saved addresses yet.<br>Add one below or use the book icon next to any address field.</div>';
+    return;
+  }
+  // Filter by chain, then show others
+  const chainEntries = entries.filter(e => e.chain === selChain);
+  const otherEntries = entries.filter(e => e.chain !== selChain);
+  let html = '';
+  if (chainEntries.length > 0) {
+    html += chainEntries.map(e => abEntryHTML(e)).join('');
+  }
+  if (otherEntries.length > 0) {
+    if (chainEntries.length > 0) html += '<div style="margin:12px 0 8px;font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;font-weight:600">Other Chains</div>';
+    html += otherEntries.map(e => abEntryHTML(e)).join('');
+  }
+  list.innerHTML = html;
+}
 
-async function doDual() {
-  const btn = $('btnDual');
-  btn.classList.add('btn-loading');
-  btn.textContent = 'Comparing...';
+function abEntryHTML(e) {
+  const short = e.address.length > 20 ? e.address.slice(0, 10) + '...' + e.address.slice(-8) : e.address;
+  return `<div class="ab-entry" onclick="selectAddress('${esc(e.address)}')">
+    <div class="ab-entry-info">
+      <div class="ab-entry-name">${esc(e.name)}</div>
+      <div class="ab-entry-chain">${esc(e.chain)}</div>
+      <div class="ab-entry-addr">${esc(short)}</div>
+    </div>
+    <button class="ab-del" onclick="event.stopPropagation();deleteAddress('${e.id}')" title="Delete">&times;</button>
+  </div>`;
+}
 
-  await new Promise(r => setTimeout(r, 300));
+function selectAddress(addr) {
+  if (abTarget) {
+    Q(abTarget).value = addr;
+    showToast('Address selected');
+  }
+  closeAllPanels();
+}
 
-  const sr = await verify($('d_s_chain').value, $('d_s_token').value, $('d_s_from').value, $('d_s_to').value, $('d_s_amt').value, $('d_s_memo').value || null);
-  const rr = await verify($('d_r_chain').value, $('d_r_token').value, $('d_r_from').value, $('d_r_to').value, $('d_r_amt').value, $('d_r_memo').value || null);
-  const fpMatch = sr.fp === rr.fp;
-  const confirmed = sr.valid && rr.valid && fpMatch;
+function saveAddress() {
+  const name = Q('ab_name').value.trim();
+  const chain = Q('ab_chain').value.trim();
+  const addr = Q('ab_addr').value.trim();
+  if (!name || !addr) { showToast('Name and address are required'); return; }
+  const entries = getAddressBook();
+  entries.unshift({ id: uid(), name, chain, address: addr, created: Date.now() });
+  setAddressBook(entries);
+  Q('ab_name').value = '';
+  Q('ab_addr').value = '';
+  renderAddressBook();
+  showToast('Address saved');
+}
 
-  const card = $('dResult');
-  card.classList.add('show');
-  const b = $('dBadge');
-  b.textContent = confirmed ? 'CONFIRMED' : 'REJECTED';
-  b.className = 'badge ' + (confirmed ? 'ready' : 'blocked');
+function deleteAddress(id) {
+  const entries = getAddressBook().filter(e => e.id !== id);
+  setAddressBook(entries);
+  renderAddressBook();
+  showToast('Address removed');
+}
 
-  let h = '<table class="stbl">';
-  h += `<tr><td>Sender</td><td>${sr.valid ? '<span style="color:var(--green)">Valid</span>' : '<span style="color:var(--red)">Invalid</span>'}</td></tr>`;
-  h += `<tr><td>Receiver</td><td>${rr.valid ? '<span style="color:var(--green)">Valid</span>' : '<span style="color:var(--red)">Invalid</span>'}</td></tr>`;
-  h += `<tr><td>Match</td><td>${fpMatch ? '<span style="color:var(--green)">Fingerprints Match</span>' : '<span style="color:var(--red)">MISMATCH</span>'}</td></tr>`;
-  h += '</table>';
+// ═══════════════════════════════════════════════════════════
+// TRANSFER HISTORY (localStorage)
+// ═══════════════════════════════════════════════════════════
 
-  // Fingerprint comparison
-  const matchClass = fpMatch ? 'match' : 'mismatch';
-  h += `<div class="dual-fp-compare">`;
-  h += `<div class="dual-fp-box ${matchClass}"><div class="fp-label">Sender FP</div><div class="fp-value">${sr.fp}</div></div>`;
-  h += `<div class="dual-fp-box ${matchClass}"><div class="fp-label">Receiver FP</div><div class="fp-value">${rr.fp}</div></div>`;
-  h += `</div>`;
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('stx_history') || '[]'); } catch { return []; }
+}
+function setHistory(data) { localStorage.setItem('stx_history', JSON.stringify(data)); updateBadgeCounts(); }
 
-  const allIssues = [...sr.issues, ...rr.issues];
-  if (allIssues.length > 0) {
-    h += '<div class="issues-section">';
-    h += allIssues.map(i =>
-      `<div class="issue ${i.sev === 'ERROR' ? 'e' : 'w'}"><span class="tag">${i.sev}</span><span class="msg"><strong>${esc(i.field)}</strong>: ${esc(i.msg)}</span></div>`
-    ).join('');
-    h += '</div>';
+function saveToHistory(entry) {
+  const hist = getHistory();
+  hist.unshift({ id: uid(), ...entry, timestamp: new Date().toISOString() });
+  if (hist.length > 50) hist.length = 50; // cap at 50
+  setHistory(hist);
+}
+
+function renderHistory() {
+  const hist = getHistory();
+  const list = Q('histList');
+  if (hist.length === 0) {
+    list.innerHTML = '<div class="panel-empty">No transfer history yet.<br>Verified transfers will appear here automatically.</div>';
+    return;
+  }
+  list.innerHTML = hist.map(h => {
+    const d = new Date(h.timestamp);
+    const time = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    const fromShort = h.from ? (h.from.slice(0, 6) + '...' + h.from.slice(-4)) : '?';
+    const toShort = h.to ? (h.to.slice(0, 6) + '...' + h.to.slice(-4)) : '?';
+    return `<div class="hist-entry">
+      <div class="hist-top">
+        <span class="hist-time">${esc(time)}</span>
+        <span class="hist-badge ${h.valid ? 'ok' : 'fail'}">${h.valid ? 'VERIFIED' : 'FAILED'}</span>
+      </div>
+      <div class="hist-detail"><strong>${esc(h.amount || '?')} ${esc(h.token || '?')}</strong> on ${esc(h.chain || '?')}</div>
+      <div class="hist-detail">${esc(fromShort)} &rarr; ${esc(toShort)}</div>
+      ${h.valid && h.fingerprint ? `<div class="hist-fp">FP: ${esc(h.fingerprint)}</div>` : ''}
+      <div class="hist-actions">
+        <button class="hist-action" onclick="loadFromHistory('${h.id}')">Re-verify</button>
+        <button class="hist-action" onclick="deleteHistoryEntry('${h.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadFromHistory(id) {
+  const entry = getHistory().find(h => h.id === id);
+  if (!entry) return;
+  closeAllPanels();
+  resetForm();
+  if (entry.chain && CHAINS[entry.chain]) pickChain(entry.chain);
+  if (entry.token) Q('f_token').value = entry.token;
+  if (entry.from) Q('f_from').value = entry.from;
+  if (entry.to) Q('f_to').value = entry.to;
+  if (entry.amount) Q('f_amt').value = entry.amount;
+  if (entry.memo) Q('f_memo').value = entry.memo;
+  showToast('Transfer details loaded');
+  Q('formCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteHistoryEntry(id) {
+  setHistory(getHistory().filter(h => h.id !== id));
+  renderHistory();
+}
+
+function clearHistory() {
+  setHistory([]);
+  renderHistory();
+  showToast('History cleared');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERACTIVE DEMO
+// ═══════════════════════════════════════════════════════════
+
+const DEMOS = {
+  success: {
+    chain: 'SOL', token: 'SOL',
+    from: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+    to: 'DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy',
+    amount: '2.5',
+    memo: 'Payment for design work',
+    banner: 'Demo: Watching a successful 2.5 SOL transfer',
+    bannerClass: 'success-demo'
+  },
+  failure: {
+    chain: 'ETH', token: 'ETH',
+    from: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD28',
+    to: '0x53d284357ec70cE289D6D',
+    amount: '0',
+    memo: '',
+    banner: 'Demo: Watching a failed ETH transfer with errors',
+    bannerClass: 'failure-demo'
+  }
+};
+
+function openDemo() { Q('demoModal').classList.add('show'); }
+function closeDemo() { Q('demoModal').classList.remove('show'); }
+
+async function runDemo(type) {
+  closeDemo();
+  resetForm();
+
+  const d = DEMOS[type];
+  const banner = Q('demoBanner');
+  Q('demoBannerText').textContent = d.banner;
+  banner.className = 'demo-banner show ' + d.bannerClass;
+
+  await sleep(300);
+  pickChain(d.chain);
+
+  const fields = [
+    ['f_token', d.token],
+    ['f_from', d.from],
+    ['f_to', d.to],
+    ['f_amt', d.amount]
+  ];
+  if (d.memo) fields.push(['f_memo', d.memo]);
+
+  for (const [id, val] of fields) {
+    await sleep(350);
+    const el = Q(id);
+    el.value = val;
+    el.classList.add('demo-fill');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    await sleep(400);
+    el.classList.remove('demo-fill');
   }
 
-  if (confirmed) {
-    h += '<div class="dual-match yes">Both parties agree. Safe to execute.</div>';
-  } else if (!fpMatch) {
-    h += '<div class="dual-match no">Details do NOT match. Reconcile before sending.</div>';
-  }
-
-  $('dSummary').innerHTML = h;
-  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  btn.classList.remove('btn-loading');
-  btn.textContent = 'Compare & Confirm';
+  await sleep(500);
+  doVerify();
 }
 
-function resetDual() {
-  ['d_s_token', 'd_s_from', 'd_s_to', 'd_s_amt', 'd_s_memo',
-   'd_r_token', 'd_r_from', 'd_r_to', 'd_r_amt', 'd_r_memo'].forEach(id => $(id).value = '');
-  sync();
-  $('dResult').classList.remove('show');
+function exitDemo() {
+  Q('demoBanner').classList.remove('show');
 }
 
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // UTILITIES
-// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 
-function $(id) { return document.getElementById(id); }
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function Q(id) { return document.getElementById(id); }
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function copyFP(el) {
   navigator.clipboard.writeText(el.textContent).then(() => {
     showToast('Fingerprint copied to clipboard');
-    const h = $('sFPHint');
+    const h = Q('fpHint');
     h.textContent = 'Copied!';
     h.classList.add('copied');
-    setTimeout(() => {
-      h.innerHTML = 'Click fingerprint to copy &mdash; share with recipient to confirm';
-      h.classList.remove('copied');
-    }, 2000);
+    setTimeout(() => { h.innerHTML = 'Click fingerprint to copy &mdash; share with recipient to confirm'; h.classList.remove('copied'); }, 2000);
   }).catch(() => {});
 }
 
 function showToast(msg) {
-  const t = $('toast');
+  const t = Q('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Auto-expand memo textareas
-document.querySelectorAll('.memo-field').forEach(el => {
-  el.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = this.scrollHeight + 'px';
-  });
-});
+function updateBadgeCounts() {
+  const abLen = getAddressBook().length;
+  const hLen = getHistory().length;
+  const abBadge = Q('abCount');
+  const hBadge = Q('histCount');
+  if (abLen > 0) { abBadge.textContent = abLen; abBadge.style.display = ''; }
+  else { abBadge.style.display = 'none'; }
+  if (hLen > 0) { hBadge.textContent = hLen > 9 ? '9+' : hLen; hBadge.style.display = ''; }
+  else { hBadge.style.display = 'none'; }
+}
 
 init();
 </script>
